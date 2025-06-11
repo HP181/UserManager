@@ -74,6 +74,13 @@ export default function UserCRUD() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
+  // Helper function to extract error message
+  const getErrorMessage = (err: unknown): string => {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'string') return err;
+    return "An unknown error occurred";
+  };
+
   // Fetch all users
   const fetchUsers = async () => {
     setLoading(true);
@@ -84,10 +91,11 @@ export default function UserCRUD() {
       if (data.success) {
         setUsers(data.users);
       } else {
-        toast.error("Failed to fetch users");
+        toast.error(data.error || "Failed to fetch users");
       }
-    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
-      toast.error("Network error occurred");
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      toast.error(`Error fetching users: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -179,8 +187,9 @@ export default function UserCRUD() {
       } else {
         toast.error(data.error || "Operation failed");
       }
-    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
-      toast.error("Network error occurred");
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      toast.error(`Error saving user: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -222,8 +231,9 @@ export default function UserCRUD() {
       } else {
         toast.error(data.error || "Failed to delete user");
       }
-    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
-      toast.error("Network error occurred");
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      toast.error(`Error deleting user: ${errorMessage}`);
     } finally {
       setLoading(false);
     }

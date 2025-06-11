@@ -3,6 +3,11 @@ import { NextResponse } from "next/server"
 import DbConnection from "@/config/DbConnection"
 import User from "@/components/models/User"
 
+// Define a more specific error type for MongoDB errors
+interface MongoDBError extends Error {
+  code?: number;
+}
+
 export async function GET() {
   await DbConnection()
 
@@ -32,9 +37,12 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error creating user:", error)
 
-    // Check for duplicate key error
-    if (error instanceof Error && 'code' in (error as any) && (error as any).code === 11000) {
-      return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
+    // Check for duplicate key error with proper type
+    if (error instanceof Error) {
+      const mongoError = error as MongoDBError;
+      if (mongoError.code === 11000) {
+        return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
+      }
     }
 
     return NextResponse.json({ success: false, error: "Failed to create user" }, { status: 500 })

@@ -3,6 +3,12 @@ import { NextResponse } from "next/server"
 import DbConnection from "@/config/DbConnection"
 import User from "@/components/models/User"
 import mongoose from "mongoose"
+import { MongoError } from "mongodb"
+
+// Define a more specific error type for MongoDB errors
+interface MongoDBError extends Error {
+  code?: number;
+}
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   await DbConnection()
@@ -57,9 +63,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   } catch (error) {
     console.error("Error updating user:", error)
 
-    // Check for duplicate key error
-    if (error instanceof Error && 'code' in (error as any) && (error as any).code === 11000) {
-      return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
+    // Check for duplicate key error with proper type
+    if (error instanceof Error) {
+      const mongoError = error as MongoDBError;
+      if (mongoError.code === 11000) {
+        return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
+      }
     }
 
     return NextResponse.json({ success: false, error: "Failed to update user" }, { status: 500 })
