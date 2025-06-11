@@ -86,7 +86,7 @@ export default function UserCRUD() {
       } else {
         toast.error("Failed to fetch users");
       }
-    } catch (error) {
+    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
       toast.error("Network error occurred");
     } finally {
       setLoading(false);
@@ -179,7 +179,7 @@ export default function UserCRUD() {
       } else {
         toast.error(data.error || "Operation failed");
       }
-    } catch (error) {
+    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
       toast.error("Network error occurred");
     } finally {
       setLoading(false);
@@ -222,7 +222,7 @@ export default function UserCRUD() {
       } else {
         toast.error(data.error || "Failed to delete user");
       }
-    } catch (error) {
+    } catch (err) { // Changed from 'error' to 'err' to fix TypeScript error
       toast.error("Network error occurred");
     } finally {
       setLoading(false);

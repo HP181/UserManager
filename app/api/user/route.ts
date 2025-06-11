@@ -1,3 +1,4 @@
+// app/api/user/route.ts
 import { NextResponse } from "next/server"
 import DbConnection from "@/config/DbConnection"
 import User from "@/components/models/User"
@@ -28,10 +29,11 @@ export async function POST(req: Request) {
     const newUser = await User.create({ username, email, phone, address })
 
     return NextResponse.json({ success: true, user: newUser }, { status: 201 })
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error creating user:", error)
 
-    if (error.code === 11000) {
+    // Check for duplicate key error
+    if (error instanceof Error && 'code' in (error as any) && (error as any).code === 11000) {
       return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
     }
 

@@ -13,7 +13,7 @@ import { UserForm } from "./UseForm";
 import { UserTable } from "./UserTable";
 import { UserActions } from "./UserActions";
 import { useUserApi } from "@/hooks/UserUserApi";
-import type { User } from "@/types/user";
+import type { User, UserFormData } from "@/types/user";
 
 export function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
@@ -37,13 +37,20 @@ export function UserManagement() {
     setIsDialogOpen(true);
   };
 
-  const handleFormSubmit = async (formData: any) => {
+  const handleFormSubmit = async (formData: UserFormData) => {
     let success = false;
+    
+    // Ensure address is not undefined
+    const validatedFormData: UserFormData = {
+      ...formData,
+      // Provide empty string as default for address if it's undefined
+      address: formData.address || "",
+    };
 
     if (editingUser) {
-      success = await updateUser(editingUser._id, formData);
+      success = await updateUser(editingUser._id, validatedFormData);
     } else {
-      success = await createUser(formData);
+      success = await createUser(validatedFormData);
     }
 
     if (success) {

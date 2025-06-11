@@ -1,3 +1,4 @@
+// app/api/user/[id]/route.ts
 import { NextResponse } from "next/server"
 import DbConnection from "@/config/DbConnection"
 import User from "@/components/models/User"
@@ -53,10 +54,11 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     return NextResponse.json({ success: true, user: updatedUser })
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error updating user:", error)
 
-    if (error.code === 11000) {
+    // Check for duplicate key error
+    if (error instanceof Error && 'code' in (error as any) && (error as any).code === 11000) {
       return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
     }
 

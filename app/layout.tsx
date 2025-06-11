@@ -1,10 +1,12 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes"
 import Navbar from "@/components/Header";
 
-const geistSans = Geist({
+// Define fonts
+const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
@@ -25,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
         <head />
         <body>
           <ThemeProvider
