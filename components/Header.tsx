@@ -1,25 +1,24 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { useState, useEffect } from "react"
-import { Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <nav className="w-full border-b bg-background px-4 py-3 shadow-sm">
       <div className="container mx-auto flex items-center justify-between">
-
         <Link href="/" className="text-lg font-semibold tracking-tight">
           <span className="text-primary">UserManager</span>
         </Link>
@@ -40,5 +39,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

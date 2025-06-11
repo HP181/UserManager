@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,24 +12,30 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import type { User, UserFormData } from "@/types/user"
+} from "@/components/ui/dialog";
+import type { User, UserFormData } from "@/types/user";
 
 interface UserFormProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (data: UserFormData) => Promise<boolean>
-  editingUser: User | null
-  loading: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: UserFormData) => Promise<boolean>;
+  editingUser: User | null;
+  loading: boolean;
 }
 
-export function UserForm({ isOpen, onClose, onSubmit, editingUser, loading }: UserFormProps) {
+export function UserForm({
+  isOpen,
+  onClose,
+  onSubmit,
+  editingUser,
+  loading,
+}: UserFormProps) {
   const [formData, setFormData] = useState<UserFormData>({
     username: "",
     email: "",
     phone: "",
     address: "",
-  })
+  });
 
   useEffect(() => {
     if (editingUser) {
@@ -38,36 +44,41 @@ export function UserForm({ isOpen, onClose, onSubmit, editingUser, loading }: Us
         email: editingUser.email,
         phone: editingUser.phone,
         address: editingUser.address,
-      })
+      });
     } else {
       setFormData({
         username: "",
         email: "",
         phone: "",
         address: "",
-      })
+      });
     }
-  }, [editingUser, isOpen])
+  }, [editingUser, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const success = await onSubmit(formData)
+    e.preventDefault();
+    const success = await onSubmit(formData);
     if (success) {
-      onClose()
+      onClose();
     }
-  }
+  };
 
-  const handleInputChange = (field: keyof UserFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }))
-  }
+  const handleInputChange =
+    (field: keyof UserFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{editingUser ? "Edit User" : "Create New User"}</DialogTitle>
+          <DialogTitle>
+            {editingUser ? "Edit User" : "Create New User"}
+          </DialogTitle>
           <DialogDescription>
-            {editingUser ? "Update the user information below." : "Fill in the details to create a new user."}
+            {editingUser
+              ? "Update the user information below."
+              : "Fill in the details to create a new user."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -105,11 +116,21 @@ export function UserForm({ isOpen, onClose, onSubmit, editingUser, loading }: Us
             </div>
             <div className="grid gap-2">
               <Label htmlFor="address">Address</Label>
-              <Input id="address" value={formData.address} onChange={handleInputChange("address")} disabled={loading} />
+              <Input
+                id="address"
+                value={formData.address}
+                onChange={handleInputChange("address")}
+                disabled={loading}
+              />
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={loading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
@@ -119,5 +140,5 @@ export function UserForm({ isOpen, onClose, onSubmit, editingUser, loading }: Us
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

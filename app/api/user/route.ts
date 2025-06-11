@@ -1,50 +1,59 @@
-// app/api/user/route.ts
-import { NextResponse } from "next/server"
-import DbConnection from "@/config/DbConnection"
-import User from "@/components/models/User"
+import { NextResponse } from "next/server";
+import DbConnection from "@/config/DbConnection";
+import User from "@/components/models/User";
 
-// Define a more specific error type for MongoDB errors
 interface MongoDBError extends Error {
   code?: number;
 }
 
 export async function GET() {
-  await DbConnection()
+  await DbConnection();
 
   try {
-    const users = await User.find().lean()
-    return NextResponse.json({ success: true, users })
+    const users = await User.find().lean();
+    return NextResponse.json({ success: true, users });
   } catch (error) {
-    console.error("Error fetching users:", error)
-    return NextResponse.json({ success: false, error: "Failed to fetch users" }, { status: 500 })
+    console.error("Error fetching users:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch users" },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: Request) {
-  await DbConnection()
+  await DbConnection();
 
   try {
-    const body = await req.json()
-    const { username, email, phone, address } = body
+    const body = await req.json();
+    const { username, email, phone, address } = body;
 
     if (!username || !email || !phone) {
-      return NextResponse.json({ success: false, error: "Username, email, and phone are required" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Username, email, and phone are required" },
+        { status: 400 }
+      );
     }
 
-    const newUser = await User.create({ username, email, phone, address })
+    const newUser = await User.create({ username, email, phone, address });
 
-    return NextResponse.json({ success: true, user: newUser }, { status: 201 })
+    return NextResponse.json({ success: true, user: newUser }, { status: 201 });
   } catch (error) {
-    console.error("Error creating user:", error)
+    console.error("Error creating user:", error);
 
-    // Check for duplicate key error with proper type
     if (error instanceof Error) {
       const mongoError = error as MongoDBError;
       if (mongoError.code === 11000) {
-        return NextResponse.json({ success: false, error: "Email already exists" }, { status: 409 })
+        return NextResponse.json(
+          { success: false, error: "Email already exists" },
+          { status: 409 }
+        );
       }
     }
 
-    return NextResponse.json({ success: false, error: "Failed to create user" }, { status: 500 })
+    return NextResponse.json(
+      { success: false, error: "Failed to create user" },
+      { status: 500 }
+    );
   }
 }

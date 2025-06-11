@@ -39,11 +39,9 @@ export function UserManagement() {
 
   const handleFormSubmit = async (formData: UserFormData) => {
     let success = false;
-    
-    // Ensure address is not undefined
+
     const validatedFormData: UserFormData = {
       ...formData,
-      // Provide empty string as default for address if it's undefined
       address: formData.address || "",
     };
 
