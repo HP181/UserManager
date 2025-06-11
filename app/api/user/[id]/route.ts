@@ -3,7 +3,6 @@ import { NextResponse } from "next/server"
 import DbConnection from "@/config/DbConnection"
 import User from "@/components/models/User"
 import mongoose from "mongoose"
-import { MongoError } from "mongodb"
 
 // Define a more specific error type for MongoDB errors
 interface MongoDBError extends Error {
